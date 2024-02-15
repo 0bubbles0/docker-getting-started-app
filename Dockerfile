@@ -11,10 +11,13 @@ FROM node:18-alpine
 WORKDIR /app
 
 # Copy new files from source . to WORKDIR container-filesystem:
-COPY . .
+## COPY . . ## This is the default, but we want to cache image layers, so will split:
+COPY package.json yarn.lock ./
 
 # Install project dependencies:
 RUN yarn install --production
+
+COPY . .
 
 # Default command to run when starting a container from this image (previous CMDs will be ignored). Flags as their own "":
 CMD ["node", "src/index.js"]
