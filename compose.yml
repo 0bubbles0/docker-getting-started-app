@@ -1,0 +1,27 @@
+services: # list of containers
+# 1. Define a service:
+  app: # automatic alias
+    image: node:18-alpine # same as Dockerfile
+    command: sh -c "yarn install && yarn run dev" # from package.json
+    ports:
+      - 127.0.0.1:3000:3000 # map localhost:3000 to Dockerfile port
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment: # env vars
+      MYSQL_HOST: mysql # same name as service 2
+      MYSQL_DB: todos # same name as MYSQL_DATABASE
+      MYSQL_USER: root
+      MYSQL_PASSWORD: secret # same password as MY_SQL_ROOT_PASSWORD
+
+# 2. Define the MySQL database
+  mysql: # automatic alias:
+    image: mysql:8.0
+    volumes:
+      - todo-mysql-data:/var/lib/mysql # define mount point
+    environment: # env vars
+      MYSQL_DATABASE: todos
+      MYSQL_ROOT_PASSWORD: secret
+
+volumes: # list of volumes
+  todo-mysql-data: # create the volume
